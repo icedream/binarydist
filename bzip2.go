@@ -3,6 +3,8 @@ package binarydist
 import (
 	"io"
 	"os/exec"
+
+	"github.com/dsnet/compress/bzip2"
 )
 
 type bzip2Writer struct {
@@ -24,17 +26,11 @@ func (w bzip2Writer) Close() error {
 // Package compress/bzip2 implements only decompression,
 // so we'll fake it by running bzip2 in another process.
 func newBzip2Writer(w io.Writer) (wc io.WriteCloser, err error) {
-	var bw bzip2Writer
-	bw.c = exec.Command("bzip2", "-c")
-	bw.c.Stdout = w
-
-	if bw.w, err = bw.c.StdinPipe(); err != nil {
-		return nil, err
+	compressedWriter, err := bzip2.NewWriter(w, nil)
+	if err != nil {
+		return
 	}
 
-	if err = bw.c.Start(); err != nil {
-		return nil, err
-	}
-
-	return bw, nil
+	wc = compressedWriter
+	return
 }
