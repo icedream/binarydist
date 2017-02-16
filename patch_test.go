@@ -11,7 +11,7 @@ func TestPatch(t *testing.T) {
 	mustWriteRandFile("test.old", 1e3, 1)
 	mustWriteRandFile("test.new", 1e3, 2)
 
-	got, err := ioutil.TempFile("/tmp", "bspatch.")
+	got, err := ioutil.TempFile("", "bspatch.")
 	if err != nil {
 		panic(err)
 	}
@@ -19,7 +19,7 @@ func TestPatch(t *testing.T) {
 
 	err = exec.Command("bsdiff", "test.old", "test.new", "test.patch").Run()
 	if err != nil {
-		panic(err)
+		t.Fatal(err)
 	}
 
 	err = Patch(mustOpen("test.old"), got, mustOpen("test.patch"))
@@ -39,7 +39,7 @@ func TestPatch(t *testing.T) {
 }
 
 func TestPatchHk(t *testing.T) {
-	got, err := ioutil.TempFile("/tmp", "bspatch.")
+	got, err := ioutil.TempFile("", "bspatch.")
 	if err != nil {
 		panic(err)
 	}

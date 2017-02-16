@@ -24,13 +24,13 @@ var diffT = []struct {
 
 func TestDiff(t *testing.T) {
 	for _, s := range diffT {
-		got, err := ioutil.TempFile("/tmp", "bspatch.")
+		got, err := ioutil.TempFile("", "bspatch.")
 		if err != nil {
 			panic(err)
 		}
 		os.Remove(got.Name())
 
-		exp, err := ioutil.TempFile("/tmp", "bspatch.")
+		exp, err := ioutil.TempFile("", "bspatch.")
 		if err != nil {
 			panic(err)
 		}
@@ -40,7 +40,7 @@ func TestDiff(t *testing.T) {
 		err = cmd.Run()
 		os.Remove(exp.Name())
 		if err != nil {
-			panic(err)
+			t.Fatal(err)
 		}
 
 		err = Diff(s.old, s.new, got)
